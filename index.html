@@ -349,12 +349,19 @@ function animateCounters() {
 function showNoBtn() {
   if (btnNo._shown) return;
   btnNo._shown = true;
-  const yesRect = document.getElementById('btnYes').getBoundingClientRect();
-  btnNo.style.transition = 'opacity 0.4s';
-  btnNo.style.top = (yesRect.bottom + 14) + 'px';
-  btnNo.style.left = '50%';
-  btnNo.style.transform = 'translateX(-50%)';
-  btnNo.style.opacity = '1';
+  // wait for scroll-snap to finish settling before measuring btnYes
+  setTimeout(function() {
+    if (!btnNo._shown) return;
+    const yesRect = document.getElementById('btnYes').getBoundingClientRect();
+    btnNo.style.transition = 'none';
+    btnNo.style.top = (yesRect.bottom + 16) + 'px';
+    btnNo.style.left = '50%';
+    btnNo.style.transform = 'translateX(-50%)';
+    requestAnimationFrame(function() {
+      btnNo.style.transition = 'opacity 0.4s';
+      btnNo.style.opacity = '1';
+    });
+  }, 350);
 }
 function hideNoBtn() {
   btnNo.style.opacity = '0';
