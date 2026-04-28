@@ -147,6 +147,33 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Georgia',seri
 @keyframes fall { 0% { transform:translateY(-20px) rotate(0deg); opacity:1; } 100% { transform:translateY(110vh) rotate(540deg); opacity:0; } }
 
 
+
+/* HOROSCOPE SLIDE */
+.sH { background:linear-gradient(160deg,#0d0714 0%,#1a0a2e 50%,#0d1a2e 100%); }
+.horo-signs { display:flex; align-items:center; gap:20px; margin:18px 0 22px; }
+.horo-sign { display:flex; flex-direction:column; align-items:center; gap:6px; opacity:0; transform:translateY(20px); transition:opacity 0.5s, transform 0.5s; }
+.scene.visible .horo-sign:nth-child(1) { opacity:1; transform:none; transition-delay:0.2s; }
+.scene.visible .horo-sign:nth-child(3) { opacity:1; transform:none; transition-delay:0.4s; }
+.horo-glyph { font-size:clamp(44px,13vw,64px); line-height:1; }
+.horo-name { font-family:'Courier New',monospace; font-size:10px; letter-spacing:2px; color:rgba(253,246,238,0.55); text-transform:uppercase; }
+.horo-x { font-size:clamp(22px,6vw,30px); color:rgba(253,246,238,0.2); opacity:0; transition:opacity 0.5s 0.3s; }
+.scene.visible .horo-x { opacity:1; }
+.horo-bar-wrap { width:100%; max-width:300px; opacity:0; transform:translateY(16px); transition:opacity 0.5s 0.55s, transform 0.5s 0.55s; }
+.scene.visible .horo-bar-wrap { opacity:1; transform:none; }
+.horo-bar-label { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+.horo-bar-title { font-family:'Courier New',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(253,246,238,0.55); }
+.horo-pct { font-size:clamp(26px,7vw,36px); font-weight:700; background:linear-gradient(135deg,var(--blush),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+.horo-track { width:100%; height:10px; background:rgba(253,246,238,0.08); border-radius:99px; overflow:hidden; }
+.horo-fill { height:100%; width:0%; background:linear-gradient(90deg,var(--rose),var(--gold)); border-radius:99px; transition:width 2.2s cubic-bezier(.25,.1,.1,1); }
+.horo-factors { display:flex; flex-direction:column; gap:6px; width:100%; max-width:300px; margin-top:16px; opacity:0; transition:opacity 0.5s 0.9s; }
+.scene.visible .horo-factors { opacity:1; }
+.horo-factor { display:flex; justify-content:space-between; font-family:'Courier New',monospace; font-size:11px; color:rgba(253,246,238,0.5); border-bottom:1px solid rgba(253,246,238,0.06); padding-bottom:5px; }
+.horo-factor span:last-child { color:rgba(253,246,238,0.75); }
+.horo-caveat { font-family:'Courier New',monospace; font-size:9px; color:rgba(253,246,238,0.25); letter-spacing:1px; margin-top:14px; opacity:0; transition:opacity 0.4s 1.3s; }
+.horo-matcha { font-family:'Courier New',monospace; font-size:11px; color:var(--rose); letter-spacing:1px; margin-top:6px; opacity:0; transition:opacity 0.3s; text-align:right; width:100%; max-width:300px; }
+.horo-matcha.show { opacity:1; }
+.scene.visible .horo-caveat { opacity:1; }
+
 /* CONFIRMATION CHAIN */
 #confirm { display:none; position:fixed; inset:0; background:var(--midnight); z-index:480; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:36px 28px; gap:0; }
 #confirm.show { display:flex; }
@@ -207,7 +234,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Georgia',seri
 
   <div class="confirm-step" id="cstep-3">
     <p class="confirm-prompt">Er hat eine<br><em>Präsentation</em> gemacht.</p>
-    <p class="confirm-sub">Fünf Slides. Echte Sticker. Viel Aufwand.</p>
+    <p class="confirm-sub">Fünf Slides. Viel Aufwand.</p>
     <div class="confirm-btns">
       <button class="btn-confirm-yes" onclick="confirmFinish()">Ich weiß auch das.</button>
       <button class="btn-confirm-no" onclick="confirmBack()">Respekt. Aber nein.</button>
@@ -273,14 +300,47 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Georgia',seri
         <div class="stat-label">Dates<br>kein einziges Nein</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num">♊︎♒︎</div>
-        <div class="stat-label">Zwilling + Wassermann<br>laut Sternen: perfekt</div>
+        <div class="stat-num" data-count="0">0</div>
+        <div class="stat-label">schlechte Dates<br>bisher</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" id="dayCount" data-count="0">—</div>
         <div class="stat-label">Tage seit<br>Date 1</div>
       </div>
     </div>
+  </div>
+
+
+  <!-- H · HOROSCOPE -->
+  <div class="scene sH" id="sH">
+    <div class="stars" id="starsH"></div>
+    <p class="scene-label light">Kosmische Einschätzung</p>
+    <h2 class="scene-title" style="color:var(--text-light);">Was die Sterne sagen.</h2>
+    <div class="horo-signs">
+      <div class="horo-sign">
+        <span class="horo-glyph">♊</span>
+        <span class="horo-name">Zwilling</span>
+      </div>
+      <div class="horo-x">×</div>
+      <div class="horo-sign">
+        <span class="horo-glyph">♒</span>
+        <span class="horo-name">Wassermann</span>
+      </div>
+    </div>
+    <div class="horo-bar-wrap">
+      <div class="horo-bar-label">
+        <span class="horo-bar-title">Kompatibilität</span>
+        <span class="horo-pct" id="horoPct">0%</span>
+      </div>
+      <div class="horo-track"><div class="horo-fill" id="horoFill"></div></div>
+    </div>
+    <p class="horo-matcha" id="horoMatcha">* Matcha.</p>
+    <div class="horo-factors">
+      <div class="horo-factor"><span>Kommunikation</span><span>außergewöhnlich</span></div>
+      <div class="horo-factor"><span>Sarkasmus-Toleranz</span><span>gegenseitig</span></div>
+      <div class="horo-factor"><span>Abenteuerbereitschaft</span><span>hoch</span></div>
+    </div>
+    <p class="horo-caveat">* wissenschaftlich nicht belegt. emotional schon.</p>
   </div>
 
   <!-- 2 · STICKERS -->
@@ -342,14 +402,16 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Georgia',seri
 
 <script>
 // ── STARS ──
-const starsEl = document.getElementById('stars');
-for (let i=0;i<60;i++) {
-  const s = document.createElement('div');
-  s.className='star';
-  const sz = Math.random()*2.5+0.5;
-  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*3}s;--delay:${-Math.random()*4}s;`;
-  starsEl.appendChild(s);
+function spawnStars(el) {
+  for (let i=0;i<55;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2.5+0.8;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--dur:${2+Math.random()*3}s;--delay:${Math.random()*3}s;`;
+    el.appendChild(s);
+  }
 }
+const starsEl = document.getElementById('stars');
+spawnStars(starsEl);
 
 // ── DAYS ──
 const start = new Date('2026-03-08');
@@ -368,10 +430,12 @@ const observer = new IntersectionObserver((entries) => {
     if (e.isIntersecting) {
       e.target.classList.add('visible');
       if (e.target.id==='s1') animateCounters();
+      if (e.target.id==='sH') animateHoro();
       if (e.target.id==='s4') showNoBtn();
     } else {
       e.target.classList.remove('visible');
       if (e.target.id==='s1') counted=false;
+      if (e.target.id==='sH') resetHoro();
       if (e.target.id==='s4') hideNoBtn();
     }
   });
@@ -484,6 +548,49 @@ function launchConfetti(){
 }
 document.getElementById('success').addEventListener('click',launchConfetti);
 
+
+// ── HOROSCOPE ──
+let horoDone = false;
+function animateHoro() {
+  if (horoDone) return; horoDone = true;
+  // spawn stars for horoscope slide
+  const sh = document.getElementById('starsH');
+  if (sh && !sh.children.length) spawnStars(sh);
+  // animate fill bar + counter
+  const fill = document.getElementById('horoFill');
+  const pct  = document.getElementById('horoPct');
+  const target = 99;
+  setTimeout(() => {
+    // re-enable transition (may have been disabled by resetHoro)
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fill.style.transition = 'width 2.2s cubic-bezier(.25,.1,.1,1)';
+      fill.style.width = '100%';
+    }));
+    const dur = 2200, start = performance.now();
+    function ease(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+    function tick(now) {
+      const t = Math.min((now-start)/dur, 1);
+      pct.textContent = Math.round(ease(t)*100) + '%';
+      if (t < 1) requestAnimationFrame(tick);
+      else {
+        // hold at 100% for 600ms then drop to 99
+        setTimeout(() => {
+          fill.style.transition = 'width 0.5s ease-in-out';
+          fill.style.width = '99%';
+          let n = 100;
+          const drop = setInterval(() => { if (n <= 99) { clearInterval(drop); pct.textContent = '99%'; } else { pct.textContent = (--n) + '%'; } }, 80);
+          // reveal matcha label
+          setTimeout(() => document.getElementById('horoMatcha').classList.add('show'), 400);
+        }, 600);
+      }
+    }
+    requestAnimationFrame(tick);
+  }, 650);
+}
+function resetHoro() { horoDone = false; const f=document.getElementById('horoFill'); f.style.transition='none'; f.style.width='0%'; document.getElementById('horoPct').textContent='0%'; document.getElementById('horoMatcha').classList.remove('show'); }
+
 // ── CONFIRMATION CHAIN ──
 function confirmNext(step) {
   document.querySelectorAll('.confirm-step').forEach(s=>s.classList.remove('active'));
@@ -492,8 +599,13 @@ function confirmNext(step) {
 }
 function confirmBack() {
   document.getElementById('confirm').classList.remove('show');
-  // scroll back to question slide
   document.getElementById('s4').scrollIntoView({behavior:'smooth'});
+  // reset no button to appear below yes again
+  btnNo.style.opacity = '0';
+  btnNo._shown = false;
+  btnNo._taps = 0;
+  btnNo.textContent = 'nein';
+  setTimeout(showNoBtn, 400);
 }
 function confirmFinish() {
   document.getElementById('confirm').classList.remove('show');
